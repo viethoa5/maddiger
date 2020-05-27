@@ -237,11 +237,15 @@ void initGame(Game &game, int nRows, int nCols, int ndeadiamond,int nbluediamond
     game.state = GAME_PLAYING;
     game.nShownCells = 0;
 }
-check(Game&game,int a,int b) {
+check(Game&game,int a,int b,const CellPos &pos,
+                       const vector<SDL_Rect> &spriteRects) {
+	Cell cell = game.cells[pos.row][pos.col];
 	if(game.cells[a][b].value =bluediamond_VALUE)
 	       score += 200;
+	   return spriteRects[SPRITE_bluediamond];
 	if(game.cells[a][b].value =deadiamond_VALUE)
-	       heath -=1;       
+	       heath -=1;  
+	   return spriteRects[SPRITE_deadiamond];
 }
 vector<CellPos> randomman(int nRows, int nCols, int man) {
     int maxVal = 1 * nCols;
@@ -304,27 +308,6 @@ void displayGame(const Game &game, const Graphic &graphic) {
     SDL_RenderPresent(graphic.renderer);    
 }
 
-SDL_Rect getSpriteRect(const Game &game, const CellPos &pos,
-                       const vector<SDL_Rect> &spriteRects) {
-
-    Cell cell = game.cells[pos.row][pos.col];
-    if (game.state == GAME_PLAYING) {
-        switch (cell.state) {
-            case CELL_HIDDEN:
-                return spriteRects[SPRITE_HIDDEN];
-            case CELL_SHOWN:
-                return spriteRects[SPRITE_SHOWN];
-        }
-    } else if (game.state == GAME_LOST) {
-            if (cell.state == CELL_HIDDEN) {
-                return spriteRects[SPRITE_HIDDEN];
-            }
-          else if (cell.value == deadiamond_VALUE) {
-                return spriteReccts[SPRITE_SHOWN];
-	  } 
-        }
-    }
-}
 void updateGame(Game &game, const SDL_Event &event) {
     if (game.state != GAME_PLAYING) {
         return;
@@ -342,6 +325,26 @@ void updateGame(Game &game, const SDL_Event &event) {
 	if (score=1000) {
 		game.state = GAME_WON;
 	}
+}
+
+SDL_Rect getSpriteRect(const Game &game, const CellPos &pos,
+                       const vector<SDL_Rect> &spriteRects) {
+
+    Cell cell = game.cells[pos.row][pos.col];
+    if (game.state == GAME_PLAYING) {
+        switch (cell.state) {
+            case CELL_HIDDEN:
+                return spriteRects[SPRITE_HIDDEN];
+            case CELL_SHOWN:
+                return spriteRects[SPRITE_SHOWN];
+        }
+    } else if (game.state == GAME_LOST) {
+            if (cell.state == CELL_HIDDEN) {
+                return spriteRects[SPRITE_HIDDEN];
+            }
+          else return spriteReccts[SPRITE_SHOWN]
+        }
+    }
 }
 
 int main() {
