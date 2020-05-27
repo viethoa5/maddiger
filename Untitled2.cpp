@@ -261,7 +261,7 @@ vector<CellPos> randomman(int nRows, int nCols, int man) {
 	 check(row+1,col);
 	 row = row + 1;
 	 manPos.push_back((CellPos) {row, col});
-	 CELL
+	 CELL 
 	 case left:
 	    n = "a";
 	 check(row-1,col);
@@ -320,13 +320,8 @@ SDL_Rect getSpriteRect(const Game &game, const CellPos &pos,
                 return spriteRects[SPRITE_HIDDEN];
             }
           else if (cell.value == deadiamond_VALUE) {
-            int lastRow = game.lastPos.row;
-            int lastCol = game.lastPos.col;
-            if (pos.row == lastRow && pos.col == lastCol) {
-                return spriteRects[SPRITE_deadiamond_CURRENT];
-            } else {
-                return spriteRects[SPRITE_deadiamond];
-            }
+                return spriteReccts[SPRITE_SHOWN];
+	  } 
         }
     }
 }
