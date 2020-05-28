@@ -7,7 +7,8 @@
 #include <iostream>     
 
 using namespace std;
-
+const int deadiamond_VALUE     = 9;
+const int bluediamond_VALUE     = 8;
 const int heath                 = 3;
 const int score                 = 0;
 const int man                   = 1;
@@ -23,7 +24,7 @@ const int WINDOW_CELL_HEIGHT    = 32;
 const int DEFAULT_NUM_ROWS      = 9;    
 const int DEFAULT_NUM_COLS      = 9;    
 const int DEFAULT_NUM_deadiamond= 10;
-const int DEFAULT_NUM_bluediamond= 10;   
+const int DEFAULT_NUM_bluediamond= 9;   
 
 const string SCREEN_TITLE       = "maddigger";   
 const string SPRITE_PATH        = "sprite.png"; 
@@ -225,7 +226,7 @@ void initGame(Game &game, int nRows, int nCols, int ndeadiamond,int nbluediamond
             if (game.cells[i] [i].value != deadiamond_VALUE) {
                 int row = blueiamondPos[i].row;
                 int col = bluediamondPos[i].col;
-                game.cells[row][col].value = bluediamond.VALUE;            
+                game.cells[row][col].value = bluediamond_VALUE;            
 			}        
     }   
 
@@ -240,12 +241,14 @@ void initGame(Game &game, int nRows, int nCols, int ndeadiamond,int nbluediamond
 check(Game&game,int a,int b,const CellPos &pos,
                        const vector<SDL_Rect> &spriteRects) {
 	Cell cell = game.cells[pos.row][pos.col];
-	if(game.cells[a][b].value =bluediamond_VALUE)
-	       score += 200;
+	if(game.cells[a][b].value =bluediamond_VALUE)	      
 	   return spriteRects[SPRITE_bluediamond];
-	if(game.cells[a][b].value =deadiamond_VALUE)
-	       heath -=1;  
+	          score += 200;
+	   return spriteRects[SPRITE_SHOWN]
+	if(game.cells[a][b].value =deadiamond_VALUE)  
 	   return spriteRects[SPRITE_deadiamond];
+	          heath -= 1;
+	   return spriteRects[SPRITE_SHOWN];
 }
 vector<CellPos> randomman(int nRows, int nCols, int man) {
     int maxVal = 1 * nCols;
@@ -260,8 +263,8 @@ vector<CellPos> randomman(int nRows, int nCols, int man) {
      while (heath > 0) {
      	cin >> n;
      switch (n) {
-     case right:
-	    n = "d";
+     case right:ddd
+	    n = "d";	     
 	 check(row+1,col);
 	 row = row + 1;
 	 manPos.push_back((CellPos) {row, col});
