@@ -1,4 +1,4 @@
-# Project: maddigger
+# Project: Project1
 # Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe -D__DEBUG__
@@ -6,10 +6,10 @@ CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
 OBJ      = Untitled2.o
 LINKOBJ  = Untitled2.o
-LIBS     = -L"D:/SDL2_image-2.0.5/i686-w64-mingw32/lib" -L"D:/SDL2-2.0.12/i686-w64-mingw32/lib" -static-libgcc -L"D:/SDL2_image-2.0.5/i686-w64-mingw32/lib" -L"D:/SDL2-2.0.12/i686-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -m32 -g3
-INCS     = -I"D:/Dev-Cpp/MinGW64/include" -I"D:/SDL2-2.0.12/i686-w64-mingw32/include/SDL2" -I"D:/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2"
-CXXINCS  = -I"D:/Dev-Cpp/MinGW64/include" -I"D:/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2" -I"D:/SDL2-2.0.12/i686-w64-mingw32/include/SDL2" -I"D:/SDL2-2.0.12/i686-w64-mingw32/include/SDL2" -I"D:/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2"
-BIN      = maddigger.exe
+LIBS     = -L"D:/SDL2_image-2.0.5/i686-w64-mingw32/lib" -L"D:/SDL2-2.0.12/i686-w64-mingw32/lib" -static-libgcc -L"D:/SDL2-2.0.12/i686-w64-mingw32/lib" -L"D:/SDL2_image-2.0.5/i686-w64-mingw32/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -m32 -g3
+INCS     = -I"D:/Dev-Cpp/MinGW64/include" -I"D:/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2" -I"D:/SDL2-2.0.12/i686-w64-mingw32/include/SDL2"
+CXXINCS  = -I"D:/Dev-Cpp/MinGW64/include" -I"D:/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2" -I"D:/SDL2-2.0.12/i686-w64-mingw32/include/SDL2" -I"D:/SDL2_image-2.0.5/i686-w64-mingw32/include/SDL2" -I"D:/SDL2-2.0.12/i686-w64-mingw32/include/SDL2"
+BIN      = Project1.exe
 CXXFLAGS = $(CXXINCS) -m32 -g3
 CFLAGS   = $(INCS) -m32 -g3
 RM       = rm.exe -f
