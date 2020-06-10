@@ -7,10 +7,10 @@
 #include <iostream>     
 
 using namespace std;
-const int deadiamond_VALUE     = 9;
+const int deadiamond_VALUE      = 9;
 const int bluediamond_VALUE     = 8;
-const int heath                 = 3;
-const int score                 = 0;
+      int heath                 = 20;
+      int score                 = 0;
 const int man                   = 1;
 const int bluediamond           = 9;
 const int deadiamond            = 9;    
@@ -21,8 +21,8 @@ const int SPRITE_CELL_HEIGHT    = 16;
 const int WINDOW_CELL_WIDTH     = 32;  
 const int WINDOW_CELL_HEIGHT    = 32;   
 
-const int DEFAULT_NUM_ROWS      = 9;    
-const int DEFAULT_NUM_COLS      = 9;    
+const int DEFAULT_NUM_ROWS      = 9;
+const int DEFAULT_NUM_COLS      = 9;
 const int DEFAULT_NUM_deadiamond= 10;
 const int DEFAULT_NUM_bluediamond= 9;   
 
@@ -99,22 +99,22 @@ void initSpriteRects(std::vector<SDL_Rect> &rects) {
             int row, col;
             switch (type) {
             	case SPRITE_SHOWN:
-            		col = 0;
-            		row = 2;
+            		col = 4;
+            		row = 0;
 					break;            		
                 case SPRITE_man:
-                    col = 0;
-                    row = 0;
+                    col = 4;
+                    row = 1;
                     break;
                 case SPRITE_bluediamond:
-				    col = 0;
-					row = 1;    
+				    col = 6;
+					row = 0 ;    
 				case SPRITE_deadiamond:
 				     col = 1;
 					 row = 1;	
                 case SPRITE_HIDDEN:
-                    col = 2;
-                    row = 0;
+                    col = 0;
+                    row = 1;
                     break;
                 default:
                     col = 2;
@@ -224,19 +224,28 @@ void initGame(Game &game, int nRows, int nCols, int ndeadiamond,int nbluediamond
 
     vector<CellPos> deadiamondPos = randomdeadiamond(nRows, nCols, ndeadiamond);
     vector<CellPos> bluediamondPos= randombluediamond(nRows,nCols,nbluediamond);
-    for (int i = 0; i < deadiamondPos.size(); i ++) {
+    for (int i = 0; i < deadiamondPos.size(); i++) {
         int row = deadiamondPos[i].row;
         int col = deadiamondPos[i].col;
         game.cells[row][col].value = deadiamond_VALUE;
     }
 
-    for (int i = 0; i < bluediamondPos.size(); i ++) {
+    for (int i = 0; i < bluediamondPos.size(); i++) {
             if (game.cells[i] [i].value != deadiamond_VALUE) {
                 int row = bluediamondPos[i].row;
                 int col = bluediamondPos[i].col;
                 game.cells[row][col].value = bluediamond_VALUE;            
 			}        
-    }   
+    }
+	for (int i = 0; i < nRows; i ++) {
+        for (int j = 0; j < nCols; j ++) {
+            if (game.cells[i][j].value != deadiamond_VALUE && game.cells[i][j].value != bluediamond_VALUE  ) {
+                CellPos pos = {i, j};
+                game.cells[i][j].value = 0;
+            }
+        }
+    }
+   
 
     game.nRows = nRows;
     game.nCols = nCols;
@@ -246,23 +255,27 @@ void initGame(Game &game, int nRows, int nCols, int ndeadiamond,int nbluediamond
     game.state = GAME_PLAYING;
     game.nShownCells = 0;
 }
-int showCells(CellTable &cells, int x,int y) {
-    Cell &cell = cells[x][y];
+int showCells(CellTable &cells, int a, int b, int &heath, int &score) {
+    Cell &cell = cells[a][b];
+    if (cells[a][b].value = deadiamond_VALUE) {
+    	heath -= 2;
+    	cells[a][b].state = CELL_DIA2;
+    	cells[a][b].value = man;
+	}
+	if (cells[a][b].value = bluediamond_VALUE) {
+		score += 400;
+		cells[a][b].state = CELL_DIA1;
+		cells[a][b].value = man;		
+	}
+	if (cells[a][b].value = man) {
+		cells[a][b].state = CELL_ACT;
+	}
+    if (cells[a][b].value = 0) {
+    	cells[a][b].state = CELL_SHOWN;
+	}
+}
 
-    cell.state = CELL_SHOWN;
-}
-int showmanCells(CellTable &cells, int x,int y) {
-	Cell &cell = cells[x][y];
-
-    cell.state = CELL_ACT;
-}
-void check(Game&game,int a,int b,int &score,int &heath) {
-	if(game.cells[a][b].value =bluediamond_VALUE)
-	       score += 200;
-	if(game.cells[a][b].value =deadiamond_VALUE)
-	       heath -=1;       
-}
-vector<CellPos> randomman(Game&game,CellTable &cells, int nCols,int man, int &a,int &b) {
+vector<CellPos> randomman(Game &game,CellTable &cells, int nCols, int man, int &a, int &b) {
     int maxVal = 1 * nCols;
 
     vector<CellPos> manPos;
@@ -273,7 +286,9 @@ vector<CellPos> randomman(Game&game,CellTable &cells, int nCols,int man, int &a,
                 b = val % nCols;
                 a=1;         
     manPos.push_back((CellPos) {a, b});
-    showmanCells(cells,a,b);
+    Cell &cell = cells[a][b];
+    cells[a][b].value = man;
+    showCells(cells,a,b,heath,score);
 }  
     return manPos;
 }
@@ -290,6 +305,10 @@ SDL_Rect getSpriteRect(const Game &game, const CellPos &pos,
                 return spriteRects[SPRITE_SHOWN];
             case CELL_ACT:
             	return spriteRects[SPRITE_man];
+            case CELL_DIA1:
+			    return 	spriteRects[SPRITE_bluediamond];
+			case CELL_DIA2:
+			    return  spriteRects[SPRITE_deadiamond];   
         }
     } else if (game.state == GAME_LOST) {
             if (cell.state == CELL_HIDDEN) {
@@ -309,8 +328,8 @@ SDL_Rect getSpriteRect(const Game &game, const CellPos &pos,
 
 
 
-void displayGame(const Game &game, const Graphic &graphic) {
-    SDL_RenderClear(graphic.renderer);      
+void displayGame(const Game &game, const Graphic &g) {
+    SDL_RenderClear(g.renderer);      
 
     for (int i = 0; i < game.nRows; i ++) {
         for (int j = 0; j < game.nCols; j ++){
@@ -323,65 +342,59 @@ void displayGame(const Game &game, const Graphic &graphic) {
 
             CellPos pos = {i, j};
 
-            SDL_Rect srcRect = getSpriteRect(game, pos, graphic.spriteRects);
+            SDL_Rect srcRect = getSpriteRect(game, pos, g.spriteRects);
 
-            SDL_RenderCopy(graphic.renderer, graphic.spriteTexture, &srcRect,
+            SDL_RenderCopy(g.renderer, g.spriteTexture, &srcRect,
                            &destRect);
         }
     }
-    SDL_RenderPresent(graphic.renderer);    
+    SDL_RenderPresent(g.renderer);    
 }
-void moveD(Game& game, Graphic& g, int &a,int &b,int &score,int &heath) {
-     b=b+1;
-     check(game,a, b,score,heath);
-     showmanCells(cells,a,b);
-     return manPos;		
+void moveD(Game& game, CellTable &cells, Graphic& g ,  int &a, int &b,  int &heath, int &score) {
+   heath = heath - 1;		
+	Cell &cell = cells[a][b];
+	b = b+1 ;  
+    showCells(cells, a, b,heath,score);
+    showCells(cells, a, b-1,heath,score);
 }
-void moveL(Game& game, Graphic& g, int &a,int &b,int &score,int &heath) {
-	a=a-1;
-    check(game,a,b,score,heath);
-    manPos.push_back((CellPos) {a,b});
-    return manPos;
+void moveL(Game& game, CellTable &cells, Graphic& g, int &a, int &b,  int &heath, int &score) {
+	heath = heath - 1;		
+	Cell &cell = cells[a][b];
+	a=a-1;   
+    showCells(cells, a, b,heath,score);
+    showCells(cells, a+1, b,heath,score);
 }
-void moveR(Game& game, Graphic& g, int &a,int &b,int &score,int &heath) {
-	a=a+1;
-    check(game,int a,int b,int &score,int &heath);
-    manPos.push_back((CellPos) {a,b});
-    return manPos;
+void moveR(Game& game, CellTable &cells, Graphic& g, int &a, int &b,  int &heath, int &score) {
+	heath = heath - 1;
+	Cell &cell = cells[a][b];
+	a=a+1; 
+    showCells(cells, a, b,heath,score);
+    showCells(cells, a-1, b,heath,score);
 }
 
-void updateGame(Game &game,Graphic &g, const SDL_Event &event,int &a,int &b, int &heath,int &score) {
+void updateGame(Game &game, Graphic& g, const SDL_Event &event, int &a, int &b, int &heath, int &score) {
     if (game.state != GAME_PLAYING) {
         return;
     }
-   for(int i=0;i<=9;i++) {
-   	 for (int j=0;j<=9;j++) {
-   	  Cell &cell = game.cells[i][j];
-    if (cell.state == CELL_SHOWN) {
-        return;
-    }
-    if (cell.state== CELL_ACT ) {
-    	return;
-	}
-
-	
+		
+      Cell &cell= game.cells[a][b];
      switch (g.event.key.keysym.sym)
-    {
-        case SDLK_DOWN:          moveD(game, g);   
-        case SDLK_LEFT:          moveL(game, g);   
-        case SDLK_RIGHT:         moveR(game, g);   
+    {   
+        case SDLK_DOWN:          moveD(game, game.cells, g, a, b, score, heath);   
+        case SDLK_LEFT:          moveL(game, game.cells, g, a, b, score, heath);   
+        case SDLK_RIGHT:         moveR(game, game.cells, g,  a, b, score, heath);   
         default: return;
     }
     if (heath=0) {
     	game.state = GAME_LOST;
     	return;
 	}
-	if (score=1200) {
+	if (score=2400) {
 		game.state = GAME_WON;
 	}
 }
 
-int main() {
+int main(int agrc, char* agrv[]) {
     srand(time(0)); 
 
     int nRows = DEFAULT_NUM_ROWS,
@@ -389,18 +402,18 @@ int main() {
         ndeadiamond = DEFAULT_NUM_deadiamond,
         nbluediamond = DEFAULT_NUM_bluediamond;
 
-    Graphic graphic;
-    if (!initGraphic(graphic, nRows, nCols)) {
-        finalizeGraphic(graphic);
+    Graphic g;
+    if (!initGraphic(g, nRows, nCols)) {
+        finalizeGraphic(g);
         return EXIT_FAILURE;
     }
 
     Game game;
-    initGame(game, nRows, nCols, nbluediamond , ndeadiamond , man);
+    initGame(game, nRows, nCols, nbluediamond, ndeadiamond);
 
     bool quit = false;
     while (!quit) {
-        displayGame(game, graphic);
+        displayGame(game, g);
 
         SDL_Event event;
         while (SDL_PollEvent(&event) != 0) {
@@ -408,21 +421,11 @@ int main() {
                 quit = true;
                 break;
             }
-
-            updateGame(game, event);
+            updateGame(game,g,event,a,b,heath,score);
         }
     }
 
-    finalizeGraphic(graphic);
+    finalizeGraphic(g);
     return EXIT_SUCCESS;
-}	
-
-
- 
-
-
-
-
-
-    
+}
 
